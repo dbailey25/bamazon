@@ -33,9 +33,6 @@ function transaction() {
     console.log('\n');
     takeOrder()
 
-
-
-
 function takeOrder() {
   inquirer.prompt([
       {
@@ -65,12 +62,13 @@ function checkQuantity() {
     if (err) throw err;
     var itemsRemaining = result
     console.log('itemsRemaining', itemsRemaining);
+    connection.end();
+
   });
 } // close function, checkQuantity
 
 
 
-connection.end();
   });
 } // close function, transaction
 
