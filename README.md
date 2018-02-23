@@ -14,7 +14,7 @@ Bamazon is a storefront simulation that lets you up your hipster game :neckbeard
 1. Lean your fixie :bike: against the wall
 1. Open your CLI
 1. Navigate to the installed directory
-1. Enter "node bamazon_customer.js" to enter the store
+1. Enter "node bamazon_customer.js" to open the app
 1. Follow the prompts in the CLI to shop away
 
 #### Who maintains this Bamazon?
