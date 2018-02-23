@@ -1,7 +1,9 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
-var itemID = 0;
-var quantity = 0;
+var orderItemID = 0;
+var orderQuantity = 0;
+var itemsRemaining = 0;
+var itemName = '';
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -18,11 +20,11 @@ var connection = mysql.createConnection({
 connection.connect(function(err) {
   if (err) throw err;
   console.log('Welcome to Bamazon, your hipster gear headquarters!');
-  transaction();
+  displayItems();
 });
 
 // function to list all products
-function transaction() {
+function displayItems() {
   connection.query("SELECT * FROM products", function(err, res) {
     if (err) throw err;
     var section = '----------------------------------------------------------------------------';
@@ -32,6 +34,8 @@ function transaction() {
     } // close loop
     console.log('\n');
     takeOrder()
+  });
+} // close function, transaction
 
 function takeOrder() {
   inquirer.prompt([
@@ -46,31 +50,54 @@ function takeOrder() {
         message: "Enter the number of items you'd like to purchase."
       }
     ]).then(function(answer) {
-      itemID = answer.product;
-                console.log('itemID', itemID);
-      quantity = answer.quantity;
-                console.log('quantity', quantity);
-      checkQuantity()
+      orderItemID = answer.product;
+      orderQuantity = answer.quantity;
+      getProductDetails()
     });
 } // close function, takeOrder
 
-function checkQuantity() {
+function getProductDetails() {
+  // query for item quantity
   connection.query('SELECT stock_quantity FROM products WHERE ?',
     {
-      item_id: itemID
+      item_id: orderItemID
     }, function(err, result) {
     if (err) throw err;
-    var itemsRemaining = result
-    console.log('itemsRemaining', itemsRemaining);
-    connection.end();
-
+    itemsRemaining = result[0].stock_quantity;
   });
-} // close function, checkQuantity
+
+    // query for item name
+    connection.query('SELECT product_name FROM products WHERE ?',
+      {
+        item_id: orderItemID
+      }, function(err, result) {
+      if (err) throw err;
+      itemName = result[0].product_name;
+      giveOrderResponse()
+      connection.end();
+    });
+  } // close function, getProductDetails
+
+  function giveOrderResponse() {
+    if (orderQuantity <= itemsRemaining) {
+      console.log('\n Cool! Knock back a PBR while we place your order.');
+      // fulfillOrder()
+    }
+    else {
+      console.log("\n Bummer, we only have " + itemsRemaining + ' ' + itemName + ' left. Select a smaller quantity.');
+      takeOrder()
+    }
+  } // close function, giveOrderResponse
+
+
+function fulfillOrder() {
+  
+} // close function, fulfillOrder
 
 
 
-  });
-} // close function, transaction
+
+
 
 
 // function displayGenre() {
