@@ -4,6 +4,9 @@ var orderItemID = 0;
 var orderQuantity = 0;
 var itemsRemaining = 0;
 var itemName = '';
+var itemPrice = 0;
+var orderedItems = [];
+var initialQuantities = [48,76,76,5,7,12,16,22,30,30,19]
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -17,13 +20,13 @@ var connection = mysql.createConnection({
   database: "bamazon"
 });
 
-connection.connect(function(err) {
-  if (err) throw err;
+// connection.connect(function(err) {
+//   if (err) throw err;
   console.log('Welcome to Bamazon, your hipster gear headquarters!');
   displayItems();
-});
+// });
 
-// function to list all products
+// list all available products
 function displayItems() {
   connection.query("SELECT * FROM products", function(err, res) {
     if (err) throw err;
@@ -37,6 +40,7 @@ function displayItems() {
   });
 } // close function, transaction
 
+// prompt user for their desired item and quantity
 function takeOrder() {
   inquirer.prompt([
       {
@@ -56,59 +60,92 @@ function takeOrder() {
     });
 } // close function, takeOrder
 
+// look up the necessary item details in the database
 function getProductDetails() {
-  // query for item quantity
-  connection.query('SELECT stock_quantity FROM products WHERE ?',
-    {
-      item_id: orderItemID
-    }, function(err, result) {
-    if (err) throw err;
-    itemsRemaining = result[0].stock_quantity;
-  });
-
-    // query for item name
-    connection.query('SELECT product_name FROM products WHERE ?',
+    connection.query('SELECT stock_quantity, product_name, price FROM products WHERE ?',
       {
         item_id: orderItemID
       }, function(err, result) {
       if (err) throw err;
+      itemsRemaining = result[0].stock_quantity;
       itemName = result[0].product_name;
+      itemPrice = result[0].price;
       giveOrderResponse()
-      connection.end();
     });
   } // close function, getProductDetails
 
+  // notify user of the order status
   function giveOrderResponse() {
     if (orderQuantity <= itemsRemaining) {
-      console.log('\n Cool! Knock back a PBR while we place your order.');
-      // fulfillOrder()
+      console.log('\nCool! Knock back a PBR while we process your order.');
+      fulfillOrder()
     }
     else {
-      console.log("\n Bummer, we only have " + itemsRemaining + ' ' + itemName + ' left. Select a smaller quantity.');
+      console.log("\nBummer, we only have " + itemsRemaining + ' ' + itemName + ' left. Select a smaller quantity or a different item.');
       takeOrder()
     }
   } // close function, giveOrderResponse
 
-
+// remove purchased items from stock_quantity and give total price to the user
 function fulfillOrder() {
-  
+  var newQuantity = itemsRemaining - orderQuantity;
+  connection.query("UPDATE products SET ? WHERE ?",
+  [
+    {
+      stock_quantity: newQuantity
+    },
+    {
+      item_id: orderItemID
+    }
+  ], function(err, res) {
+      if (err) throw err;
+      var rawTotal = orderQuantity * itemPrice;
+      var totalPrice = rawTotal.toFixed(2);
+      console.log('\nHuzzah! Your order is complete. Your total cost is $' + totalPrice + '.\n');
+      orderedItems.push(orderItemID)
+      newOrder()
+    });
 } // close function, fulfillOrder
 
+// ask use if they want to order additional items
+function newOrder() {
+  inquirer.prompt([
+      {
+        type: "confirm",
+        message: "Do you want to buy anything else?",
+        name: "confirm",
+        default: true
+      }
+    ]).then(function(answer) {
+              // console.log(answer);
+      if (answer.confirm) {
+        takeOrder()
+      }
+      else {
+        console.log('Okay, see you next time.');
+        restockInventories();
+      }
+    });
+} // close function, newOrder
 
-
-
-
-
-
-// function displayGenre() {
-//   connection.query("SELECT * FROM songs WHERE genre = 'Dance' ", function(err, res) {
-//     if (err) throw err;
-//     var section = '--------------------------------------------------------------';
-//     console.log(section);
-//     for (var i = 0; i > res.length; i++) {
-//       console.log('1) Track: ' + res[i].title + ' | Artist: ' + res[i].artist + ' | Genre: '  + res[i].genre);
-//     }
-//
-// connection.end();
-//   });
-// }
+// after all transactions are completed, restock all items to the initial quantities
+function restockInventories() {
+var itemIndex = 0;
+var initialQuantity = 0;
+  for (var i = 0; i < orderedItems.length; i++) {
+    itemIndex = orderedItems[i] - 1;
+    initialQuantity = initialQuantities[itemIndex];    
+    connection.query("UPDATE products SET ? WHERE ?",
+    [
+      {
+        stock_quantity: initialQuantity
+      },
+      {
+        item_id: orderedItems[i]
+      }
+    ], function(err, res) {
+      if (err) throw err;
+      });
+  } // close loop
+  connection.end();
+} // close function, fulfillOrder
