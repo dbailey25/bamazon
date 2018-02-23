@@ -6,6 +6,31 @@
 ### Who maintains this Bamazon?
 ### Where can you get help with Bamazon?
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #### What is Bamazon?
 Bamazon is a storefront simulation that lets you place an order for a desired quantity of available products. Bamazon uses Node JS to allow usage via your Command Line Interface (CLI) and handle the transaction logic. A SQL database is used to store the necessary product data.
 
