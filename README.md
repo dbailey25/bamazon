@@ -8,10 +8,10 @@
 
 
 #### What is Bamazon?
-Bamazon is a storefront simulation that lets you up your hipster game. :neckbeard: Place an order for a desired quantity of available products. Bamazon uses Node JS to allow usage via your Command Line Interface (CLI) and handle the transaction logic. A SQL database is used to store the necessary product data.
+Bamazon is a storefront simulation that lets you up your hipster game :neckbeard:. Place an order for a desired quantity of available products. Bamazon uses Node JS to allow usage via your Command Line Interface (CLI) and handle the transaction logic. A SQL database is used to store the necessary product data.
 
 #### How to use Bamazon?
-1. Lean your fixie :bicyclist: against the wall
+1. Lean your fixie :bike: against the wall
 1. Open your CLI
 1. Navigate to the installed directory
 1. Execute the bamazon_customer.js file
