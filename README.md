@@ -17,6 +17,10 @@ Bamazon is a storefront simulation that lets you up your hipster game :neckbeard
 1. Enter "node bamazon_customer.js" to open the app
 1. Follow the prompts in the CLI to shop away
 
+#### Want a demo?
+Glad you asked, here you go.
+![Demo](/assets/Bamazon-Demo.gif)
+
 #### Who maintains this Bamazon?
 This project is diligently maintained be me. :sweat_smile:
 
