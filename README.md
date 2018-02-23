@@ -20,7 +20,7 @@ Bamazon is a storefront simulation that lets you up your hipster game :neckbeard
 #### What does Bamazon look like?
 ![Demo](/assets/Bamazon_Demo.gif)
 
-#### Who maintains this Bamazon?
+#### Who maintains Bamazon?
 This project is diligently maintained be me. :sweat_smile:
 
 #### Where to get help with Bamazon?
