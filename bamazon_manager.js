@@ -86,7 +86,7 @@ function updateStock() {
       {
         type: "input",
         name: "item_id",
-        message: "Enter the ID of the item you'd like to restock."
+        message: "Enter the ID of the item you'd like to update."
       },
       {
         type: "input",
