@@ -26,9 +26,11 @@ Manager mode:
 
 #### What does Bamazon look like?
 Customer mode:
+
 ![CustomerDemo](/assets/Bamazon_Demo_Customer.gif)
 
 Manager mode:
+
 ![ManagerDemo](/assets/Bamazon_Demo_Manager.gif)
 
 #### Who maintains Bamazon?
